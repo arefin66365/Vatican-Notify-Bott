@@ -9,14 +9,16 @@ CHAT_ID = os.getenv("CHAT_ID")
 bot = Bot(token=TOKEN)
 
 
-async def send_message(text):
+async def send_message(message):
     await bot.send_message(
         chat_id=CHAT_ID,
-        text=text
+        text=message
     )
 
 
 async def check_vatican():
+
+    url = "https://tickets.museivaticani.va/"
 
     async with async_playwright() as p:
 
@@ -27,15 +29,21 @@ async def check_vatican():
         page = await browser.new_page()
 
         await page.goto(
-            "https://tickets.museivaticani.va/home",
-            wait_until="networkidle"
+            url,
+            wait_until="networkidle",
+            timeout=60000
         )
 
-        title = await page.title()
+        content = await page.content()
 
-        await send_message(
-            f"🌐 Vatican page opened\nTitle: {title}"
-        )
+        if "Vatican" in content:
+            await send_message(
+                "✅ Vatican Museums page checked successfully"
+            )
+        else:
+            await send_message(
+                "❌ Vatican page not loaded"
+            )
 
         await browser.close()
 
