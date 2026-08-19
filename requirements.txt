@@ -1,2 +1,4 @@
-playwright
 python-telegram-bot
+requests
+beautifulsoup4
+playwright
