@@ -7,6 +7,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+      CHAT_ID: ${{ secrets.CHAT_ID }}
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
