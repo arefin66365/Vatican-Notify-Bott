@@ -31,7 +31,9 @@ async def check_vatican():
 
         buttons = await page.get_by_text("BOOK").count()
 
-await send_message(f"BOOK button count: {buttons}")
+        await send_message(
+            f"🔎 Vatican check completed.\nBOOK button found: {buttons}"
+        )
 
         if buttons > 0:
             await send_message(
@@ -39,8 +41,6 @@ await send_message(f"BOOK button count: {buttons}")
                 "✅ Vatican Museums ticket found.\n"
                 "🔗 https://tickets.museivaticani.va/"
             )
-
-        # No ticket হলে কোনো message যাবে না
 
         await browser.close()
 
