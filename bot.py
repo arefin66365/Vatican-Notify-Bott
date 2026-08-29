@@ -22,7 +22,10 @@ async def check_vatican():
 
     async with async_playwright() as p:
 
-        browser = await p.chromium.launch(headless=True)
+        browser = await p.chromium.launch(
+            headless=True
+        )
+
         page = await browser.new_page()
 
         try:
@@ -36,7 +39,6 @@ async def check_vatican():
 
             text = await page.locator("body").inner_text()
 
-            # Check if 10 AM exists
             if "10:00" in text or "10.00" in text:
 
                 await send_message(
@@ -48,14 +50,21 @@ async def check_vatican():
                 )
 
             else:
-                print("10 AM slot not found")
+
+                await send_message(
+                    "🔎 Page checked.\n\n"
+                    "Current page text:\n\n"
+                    + text[:2000]
+                )
 
         except Exception as e:
+
             await send_message(
                 f"⚠️ Error:\n{e}"
             )
 
         finally:
+
             await browser.close()
 
 
