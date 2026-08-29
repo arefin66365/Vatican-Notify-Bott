@@ -8,7 +8,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 
 bot = Bot(token=TOKEN)
 
-DATE = "07/09/2026"
+URL = "https://tickets.museivaticani.va/home/visit/1/1788732000000/1"
 
 
 async def send_message(text):
@@ -27,39 +27,32 @@ async def check_vatican():
 
         try:
             await page.goto(
-                "https://tickets.museivaticani.va/",
+                URL,
                 wait_until="networkidle",
                 timeout=60000
             )
 
             await page.wait_for_timeout(5000)
 
-            content = await page.content()
+            text = await page.locator("body").inner_text()
 
-            if "07/09/2026" in content or "7 September 2026" in content:
+            if "07/09/2026" in text or "7 September 2026" in text:
 
                 await send_message(
-                    "🎉 Vatican Ticket Available!\n\n"
+                    "🎉 Vatican Slot Found!\n\n"
                     "📅 Date: 7 September 2026\n"
                     "🎟 Vatican Museums + Sistine Chapel\n\n"
-                    "🔗 https://tickets.museivaticani.va/"
+                    "Check booking page:\n"
+                    f"{URL}"
                 )
 
             else:
-
-                await send_message(
-                    "🔎 Vatican check completed.\n"
-                    "❌ No slot found for 7 September 2026"
-                )
+                print("No slot found")
 
         except Exception as e:
-
-            await send_message(
-                f"⚠️ Error occurred:\n{e}"
-            )
+            print(e)
 
         finally:
-
             await browser.close()
 
 
