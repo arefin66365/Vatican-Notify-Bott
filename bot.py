@@ -10,11 +10,14 @@ bot = Bot(token=TOKEN)
 
 URL = "https://tickets.museivaticani.va/home/visit/1/1788732000000/1"
 
+TARGET_DATE = "7 September 2026"
+TARGET_TIME = "10:00"
 
-async def send_message(text):
+
+async def send_message(message):
     await bot.send_message(
         chat_id=CHAT_ID,
-        text=text
+        text=message
     )
 
 
@@ -29,6 +32,7 @@ async def check_vatican():
         page = await browser.new_page()
 
         try:
+
             await page.goto(
                 URL,
                 wait_until="networkidle",
@@ -37,35 +41,48 @@ async def check_vatican():
 
             await page.wait_for_timeout(8000)
 
-            text = await page.locator("body").inner_text()
+            page_text = await page.locator(
+                "body"
+            ).inner_text()
 
-            if "10:00" in text or "10.00" in text:
+
+            # Check date
+            if TARGET_DATE.lower() not in page_text.lower():
+
+                print("Date not found")
+                await browser.close()
+                return
+
+
+            # Check time
+            if TARGET_TIME in page_text:
 
                 await send_message(
-                    "🎉 Vatican Slot Available!\n\n"
+                    "🎉 VATICAN TICKET AVAILABLE!\n\n"
                     "📅 Date: 7 September 2026\n"
                     "⏰ Time: 10:00 AM\n"
                     "🎟 Vatican Museums + Sistine Chapel\n\n"
-                    f"🔗 {URL}"
+                    "Book now:\n"
+                    f"{URL}"
                 )
+
+                print("AVAILABLE")
+
 
             else:
 
-                await send_message(
-                    "🔎 Page checked.\n\n"
-                    "Current page text:\n\n"
-                    + text[:2000]
-                )
+                print("10:00 slot not available")
+
 
         except Exception as e:
 
-            await send_message(
-                f"⚠️ Error:\n{e}"
-            )
+            print("Error:", e)
+
 
         finally:
 
             await browser.close()
+
 
 
 asyncio.run(check_vatican())
