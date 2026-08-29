@@ -1,10 +1,13 @@
 name: Vatican Bot
 
 on:
+  schedule:
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 jobs:
   test:
+
     runs-on: ubuntu-latest
 
     env:
@@ -12,22 +15,20 @@ jobs:
       CHAT_ID: ${{ secrets.CHAT_ID }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+    - name: Checkout
+      uses: actions/checkout@v4
 
-      - name: Install packages
-        run: |
-          pip install -r requirements.txt
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
 
-      - name: Install Playwright Browser
-        run: |
-          playwright install chromium
+    - name: Install packages
+      run: |
+        pip install -r requirements.txt
+        playwright install chromium
 
-      - name: Run bot
-        run: |
-          python bot.py
+    - name: Run bot
+      run: |
+        python bot.py
