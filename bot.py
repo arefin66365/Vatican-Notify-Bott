@@ -22,19 +22,26 @@ async def check_vatican():
 
     async with async_playwright() as p:
 
-        browser = await p.chromium.launch(headless=True)
+        browser = await p.chromium.launch(
+            headless=True
+        )
+
         page = await browser.new_page()
 
         try:
+
             await page.goto(
                 URL,
                 wait_until="networkidle",
                 timeout=60000
             )
 
-            await page.wait_for_timeout(5000)
+            await page.wait_for_timeout(8000)
 
             text = await page.locator("body").inner_text()
+
+            # Debug: page কী দেখছে তার কিছু অংশ পাঠাবে
+            preview = text[:1000]
 
             if "07/09/2026" in text or "7 September 2026" in text:
 
@@ -42,17 +49,26 @@ async def check_vatican():
                     "🎉 Vatican Slot Found!\n\n"
                     "📅 Date: 7 September 2026\n"
                     "🎟 Vatican Museums + Sistine Chapel\n\n"
-                    "Check booking page:\n"
-                    f"{URL}"
+                    f"🔗 {URL}"
                 )
 
             else:
-                print("No slot found")
+
+                await send_message(
+                    "🔎 Vatican check completed.\n"
+                    "❌ 7 September 2026 not found.\n\n"
+                    "Page preview:\n"
+                    f"{preview}"
+                )
 
         except Exception as e:
-            print(e)
+
+            await send_message(
+                f"⚠️ Vatican Bot Error:\n{e}"
+            )
 
         finally:
+
             await browser.close()
 
 
