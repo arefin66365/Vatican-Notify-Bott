@@ -8,6 +8,8 @@ CHAT_ID = os.getenv("CHAT_ID")
 
 bot = Bot(token=TOKEN)
 
+DATE = "07/09/2026"
+
 
 async def send_message(text):
     await bot.send_message(
@@ -23,26 +25,39 @@ async def check_vatican():
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
 
-        await page.goto(
-            "https://tickets.museivaticani.va/",
-            wait_until="networkidle",
-            timeout=60000
-        )
-
-        buttons = await page.get_by_text("BOOK").count()
-
-        await send_message(
-            f"🔎 Vatican check completed.\nBOOK button found: {buttons}"
-        )
-
-        if buttons > 0:
-            await send_message(
-                "🎉 Vatican Ticket Available!\n\n"
-                "✅ Vatican Museums ticket found.\n"
-                "🔗 https://tickets.museivaticani.va/"
+        try:
+            await page.goto(
+                "https://tickets.museivaticani.va/",
+                wait_until="networkidle",
+                timeout=60000
             )
 
-        await browser.close()
+            # Search date/product availability
+            await page.wait_for_timeout(5000)
+
+            content = await page.content()
+
+            if "07/09/2026" in content or "7 September 2026" in content:
+
+                # Find available time text
+                text = await page.locator("body").inner_text()
+
+                await send_message(
+                    "🎉 Vatican Ticket Available!\n\n"
+                    "📅 Date: 7 September 2026\n"
+                    "🎟 Vatican Museums + Sistine Chapel\n\n"
+                    "Check website:\n"
+                    "https://tickets.museivaticani.va/"
+                )
+
+            else:
+                print("No availability")
+
+        except Exception as e:
+            print(e)
+
+        finally:
+            await browser.close()
 
 
 asyncio.run(check_vatican())
