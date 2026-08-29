@@ -32,31 +32,34 @@ async def check_vatican():
                 timeout=60000
             )
 
-            # Search date/product availability
             await page.wait_for_timeout(5000)
 
             content = await page.content()
 
             if "07/09/2026" in content or "7 September 2026" in content:
 
-                # Find available time text
-                text = await page.locator("body").inner_text()
-
                 await send_message(
                     "🎉 Vatican Ticket Available!\n\n"
                     "📅 Date: 7 September 2026\n"
                     "🎟 Vatican Museums + Sistine Chapel\n\n"
-                    "Check website:\n"
-                    "https://tickets.museivaticani.va/"
+                    "🔗 https://tickets.museivaticani.va/"
                 )
 
             else:
-    await send_message("🔎 Vatican check completed. No slot found for 7 September 2026")
+
+                await send_message(
+                    "🔎 Vatican check completed.\n"
+                    "❌ No slot found for 7 September 2026"
+                )
 
         except Exception as e:
-            print(e)
+
+            await send_message(
+                f"⚠️ Error occurred:\n{e}"
+            )
 
         finally:
+
             await browser.close()
 
 
