@@ -9,40 +9,35 @@ CHAT_ID = os.getenv("CHAT_ID")
 bot = Bot(token=TOKEN)
 
 
-async def send_message(message):
+async def send_message(text):
     await bot.send_message(
         chat_id=CHAT_ID,
-        text=message
+        text=text
     )
 
 
 async def check_vatican():
 
-    url = "https://tickets.museivaticani.va/"
-
     async with async_playwright() as p:
 
-        browser = await p.chromium.launch(
-            headless=True
-        )
-
+        browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
 
         await page.goto(
-            url,
+            "https://tickets.museivaticani.va/",
             wait_until="networkidle",
             timeout=60000
         )
 
-        content = await page.content()
+        buttons = await page.get_by_text("BOOK").count()
 
-        if "Vatican" in content:
+        if buttons > 0:
             await send_message(
-                "✅ Vatican Museums page checked successfully"
+                "🎉 Vatican Ticket Available!\nBOOK button found."
             )
         else:
             await send_message(
-                "❌ Vatican page not loaded"
+                "❌ No ticket available"
             )
 
         await browser.close()
