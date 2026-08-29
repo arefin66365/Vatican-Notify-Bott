@@ -10,8 +10,8 @@ bot = Bot(token=TOKEN)
 
 URL = "https://tickets.museivaticani.va/home/visit/1/1788732000000/1"
 
-TARGET_DATE = "7 September 2026"
-TARGET_TIME = "10:00"
+TARGET_DATE = "29 October 2026"
+TARGET_TIME = "9:00"
 
 
 async def send_message(message):
