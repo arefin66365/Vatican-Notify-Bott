@@ -31,6 +31,8 @@ async def check_vatican():
 
         buttons = await page.get_by_text("BOOK").count()
 
+await send_message(f"BOOK button count: {buttons}")
+
         if buttons > 0:
             await send_message(
                 "🎉 Vatican Ticket Available!\n\n"
