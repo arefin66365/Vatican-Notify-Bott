@@ -51,7 +51,7 @@ async def check_vatican():
                 )
 
             else:
-                print("No availability")
+    await send_message("🔎 Vatican check completed. No slot found for 7 September 2026")
 
         except Exception as e:
             print(e)
