@@ -33,12 +33,12 @@ async def check_vatican():
 
         if buttons > 0:
             await send_message(
-                "🎉 Vatican Ticket Available!\nBOOK button found."
+                "🎉 Vatican Ticket Available!\n\n"
+                "✅ Vatican Museums ticket found.\n"
+                "🔗 https://tickets.museivaticani.va/"
             )
-        else:
-            await send_message(
-                "❌ No ticket available"
-            )
+
+        # No ticket হলে কোনো message যাবে না
 
         await browser.close()
 
